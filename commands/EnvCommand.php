@@ -199,7 +199,7 @@ EOD;
         $ownerData = posix_getpwuid($ownerUid);
         $oldOwner = $ownerData['name'];
         if ($oldOwner !== $this->user) {
-            echo sprintf("Changing ownership of %s (%s => %s)... ", $path, $oldOwner, $newOwner);
+            echo sprintf("Changing owner for %s (%s => %s)... ", $path, $oldOwner, $newOwner);
             chown($path, $newOwner);
             echo "done\n";
         }
@@ -216,7 +216,7 @@ EOD;
         $groupData = posix_getgrgid($groupGid);
         $oldGroup = $groupData['name'];
         if ($oldGroup !== $newGroup) {
-            echo sprintf("Changing group of %s (%s => %s)... ", $path, $oldGroup, $newGroup);
+            echo sprintf("Changing group for %s (%s => %s)... ", $path, $oldGroup, $newGroup);
             chgrp($path, $newGroup);
             echo "done\n";
         }
@@ -232,7 +232,7 @@ EOD;
         $oldPermission = substr(sprintf('%o', fileperms($path)), -4);
         $newPermission = sprintf('%04o', $mode);
         if ($oldPermission !== $newPermission) {
-            echo sprintf("Changing permissions of %s (%s => %s)... ", $path, $oldPermission, $newPermission);
+            echo sprintf("Changing mode for %s (%s => %s)... ", $path, $oldPermission, $newPermission);
             chmod($path, $mode);
             echo "done\n";
         }
