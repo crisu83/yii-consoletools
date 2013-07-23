@@ -59,7 +59,7 @@ EOD;
                     $this->changeGroup($path, $config['group']);
                 }
                 if (isset($config['mode'])) {
-                    $this->changePermission($path, $config['mode']);
+                    $this->changeMode($path, $config['mode']);
                 }
             } else {
                 echo sprintf("Failed to change permissions for %s. File does not exist!", $path);
@@ -104,11 +104,11 @@ EOD;
     }
 
     /**
-     * Changes the permissions for a directory.
+     * Changes the mode for a directory.
      * @param string $path the directory path.
-     * @param integer $mode the permission.
+     * @param integer $mode the mode.
      */
-    protected function changePermission($path, $mode)
+    protected function changeMode($path, $mode)
     {
         $oldPermission = substr(sprintf('%o', fileperms($path)), -4);
         $newPermission = sprintf('%04o', $mode);
