@@ -17,12 +17,9 @@ class ConfigHelper
      * @param array $array the configurations to merge.
      * @return array the merged configuration.
      */
-    public static function merge($array)
+    public static function merge(array $array)
     {
         $result = array();
-        if (!is_array($array)) {
-            $array = array($array);
-        }
         foreach ($array as $config) {
             if (is_string($config)) {
                 if (!file_exists($config)) {
