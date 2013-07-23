@@ -8,16 +8,16 @@
  */
 
 /**
- * Helper for building application configurations.
+ * Helper for creating application configurations.
  */
 class ConfigHelper
 {
     /**
-     * Builds a configuration from the given array.
-     * @param array $array the configuration parts.
-     * @return array the configuration.
+     * Merges the given configurations into a single configuration array.
+     * @param array $array the configurations to merge.
+     * @return array the merged configuration.
      */
-    public static function build($array)
+    public static function merge($array)
     {
         $result = array();
         if (!is_array($array)) {
@@ -44,7 +44,7 @@ class ConfigHelper
      * @param array $b array to be merged from.
      * @return array the merged array.
      */
-    protected static function mergeArray($a, $b)
+    public static function mergeArray($a, $b)
     {
         $args = func_get_args();
         $res = array_shift($args);
