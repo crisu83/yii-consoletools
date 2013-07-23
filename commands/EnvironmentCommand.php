@@ -92,7 +92,7 @@ EOD;
         $id = $args[0];
         $environmentPath = $this->basePath . '/environments/' . $id;
 
-        echo "Flushing directories... ";
+        echo "\nFlushing directories... ";
         foreach ($this->flushPaths as $dir) {
             $path = realpath($this->basePath . '/' . $dir);
             if (file_exists($path)) {
@@ -102,7 +102,7 @@ EOD;
         }
         echo "done\n";
 
-        echo "\nCopying environment files... ";
+        echo "Copying environment files... ";
         if (!file_exists($environmentPath)) {
             throw new CException(sprintf("Failed to change environment. Unknown environment '%s'!", $id));
         }
