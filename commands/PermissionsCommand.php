@@ -1,6 +1,6 @@
 <?php
 /**
- * EnvironmentCommand class file.
+ * PermissionsCommand class file.
  * @author Christoffer Niska <christoffer.niska@gmail.com>
  * @copyright Copyright &copy; Christoffer Niska 2013-
  * @license http://www.opensource.org/licenses/bsd-license.php New BSD License
@@ -10,20 +10,17 @@
 Yii::import('vendor.crisu83.yii-deploymenttools.commands.DeploymentCommand');
 
 /**
- * Console command for deploying environments.
+ * Console command for changing directory permissions and ownership.
  */
-class EnvironmentCommand extends DeploymentCommand
+class PermissionsCommand extends DeploymentCommand
 {
     /**
-     * @var string the default action.
+     * @var array list of permission configurations (path => config).
      */
-    public $defaultAction = 'change';
-    /**
-     * @var array list of directories that should be flushed.
-     */
-    public $flushPaths = array(
-        'protected/runtime',
-        'assets',
+    public $permissions = array(
+        'protected/runtime' => array('mode' => 0777),
+        'protected/yiic' => array('mode' => 0755),
+        'assets' => array('mode' => 0777),
     );
 
     /**
@@ -34,60 +31,42 @@ class EnvironmentCommand extends DeploymentCommand
     {
         return <<<EOD
 USAGE
-  yiic environment <action> <options>
+  yiic permissions
 
 DESCRIPTION
-  Activates a specific environment by flushing the necessary directories and copying the environment specific files into the application.
+  Sets the correct permissions for files and directories.
 
 EXAMPLES
-  * yiic environment [change] prod
-    Activates the "prod" environment.
-  * yiic environment create prod
-    Creates a "prod" environment.
+  * yiic permissions
+    Sets the permissions.
 EOD;
     }
 
     /**
-     * Creates an environment.
+     * Runs the command.
      * @param array $args the command-line arguments.
+     * @return integer the return code.
      */
-    public function actionCreate($args)
+    public function run($args)
     {
-        // todo: write this...
-    }
-
-    /**
-     * Changes the current environment.
-     * @param array $args the command-line arguments.
-     * @throws CException if the environment path does not exist.
-     */
-    public function actionChange($args)
-    {
-        if (!isset($args[0])) {
-            $this->usageError('The environment id is not specified.');
-        }
-
-        $id = $args[0];
-        $environmentPath = $this->basePath . '/environments/' . $id;
-
-        echo "\nFlushing directories... ";
-        foreach ($this->flushPaths as $dir) {
+        foreach ($this->permissions as $dir => $config) {
             $path = realpath($this->basePath . '/' . $dir);
             if (file_exists($path)) {
-                $this->deleteDirectory($path, true);
+                if (isset($config['user'])) {
+                    $this->changeOwner($path, $config['user']);
+                }
+                if (isset($config['group'])) {
+                    $this->changeGroup($path, $config['group']);
+                }
+                if (isset($config['mode'])) {
+                    $this->changePermission($path, $config['mode']);
+                }
+            } else {
+                echo sprintf("Failed to change permissions for %s. File does not exist!", $path);
             }
-            $this->createDirectory($path);
         }
-        echo "done\n";
-
-        echo "Copying environment files... ";
-        if (!file_exists($environmentPath)) {
-            throw new CException(sprintf("Failed to change environment. Unknown environment '%s'!", $id));
-        }
-        $this->copyDirectory($environmentPath, $this->basePath);
-        echo "done\n";
-
-        echo "Environment successfully changed to '{$id}'.\n";
+        echo "\nPermissions successfully changed. \n";
+        return 0;
     }
 
     /**
