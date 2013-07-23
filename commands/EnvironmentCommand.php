@@ -92,6 +92,16 @@ EOD;
         $id = $args[0];
         $environmentPath = $this->basePath . '/environments/' . $id;
 
+        echo "Flushing directories... ";
+        foreach ($this->flushPaths as $dir) {
+            $path = realpath($this->basePath . '/' . $dir);
+            if (file_exists($path)) {
+                $this->deleteDirectory($path, true);
+            }
+            $this->createDirectory($path);
+        }
+        echo "done\n";
+
         echo "\nCopying environment files... ";
         if (!file_exists($environmentPath)) {
             throw new CException(sprintf("Failed to change environment. Unknown environment '%s'!", $id));
@@ -115,16 +125,6 @@ EOD;
                 echo sprintf("Failed to change permissions for %s. File does not exist!", $path);
             }
         }
-
-        echo "Flushing directories... ";
-        foreach ($this->flushPaths as $dir) {
-            $path = realpath($this->basePath . '/' . $dir);
-            if (file_exists($path)) {
-                $this->deleteDirectory($path, true);
-            }
-            $this->createDirectory($path);
-        }
-        echo "done\n";
 
         echo "Environment successfully changed to '{$id}'.\n";
     }
