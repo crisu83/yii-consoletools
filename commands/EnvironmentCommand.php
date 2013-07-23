@@ -1,6 +1,6 @@
 <?php
 /**
- * EnvCommand class file.
+ * EnvironmentCommand class file.
  * @author Christoffer Niska <christoffer.niska@gmail.com>
  * @copyright Copyright &copy; Christoffer Niska 2013-
  * @license http://www.opensource.org/licenses/bsd-license.php New BSD License
@@ -8,10 +8,14 @@
  */
 
 /**
- * Console command for creating, activating and deleting environments.
+ * Console command for deploying environments.
  */
-class EnvCommand extends CConsoleCommand
+class EnvironmentCommand extends CConsoleCommand
 {
+    /**
+     * @var string the default action.
+     */
+    public $defaultAction = 'change';
     /**
      * @var string the base path.
      */
@@ -40,16 +44,16 @@ class EnvCommand extends CConsoleCommand
     {
         return <<<EOD
 USAGE
-  yiic deploy <action> <options>
+  yiic environment <action> <options>
 
 DESCRIPTION
-  Activates a specific environment by copying the associated files into the application.
+  Activates a specific environment by flushing the necessary directories, copying the environment specific files into the application and changing file permissions if necessary.
 
 EXAMPLES
-  * yiic deploy init prod
-    Creates a "prod" environment.
-  * yiic deploy activate prod
+  * yiic environment [change] prod
     Activates the "prod" environment.
+  * yiic environment create prod
+    Creates a "prod" environment.
 EOD;
     }
 
@@ -69,37 +73,28 @@ EOD;
      * Creates an environment.
      * @param array $args the command-line arguments.
      */
-    public function actionInit($args)
+    public function actionCreate($args)
     {
         // todo: write this...
     }
 
     /**
-     * Activates a specific environment.
+     * Changes the current environment.
      * @param array $args the command-line arguments.
      * @throws CException if the environment path does not exist.
      */
-    public function actionActivate($args)
+    public function actionChange($args)
     {
         if (!isset($args[0])) {
             $this->usageError('The environment id is not specified.');
         }
+
         $id = $args[0];
         $environmentPath = $this->basePath . '/environments/' . $id;
 
-        echo "Flushing directories... ";
-        foreach ($this->flushPaths as $dir) {
-            $path = realpath($this->basePath . '/' . $dir);
-            if (file_exists($path)) {
-                $this->deleteDirectory($path, true);
-            }
-            $this->createDirectory($path);
-        }
-        echo "done\n";
-
         echo "\nCopying environment files... ";
         if (!file_exists($environmentPath)) {
-            throw new CException(sprintf("Failed to activate environment. Unknown environment '%s'!", $id));
+            throw new CException(sprintf("Failed to change environment. Unknown environment '%s'!", $id));
         }
         $this->copyDirectory($environmentPath, $this->basePath);
         echo "done\n";
@@ -120,6 +115,16 @@ EOD;
                 echo sprintf("Failed to change permissions for %s. File does not exist!", $path);
             }
         }
+
+        echo "Flushing directories... ";
+        foreach ($this->flushPaths as $dir) {
+            $path = realpath($this->basePath . '/' . $dir);
+            if (file_exists($path)) {
+                $this->deleteDirectory($path, true);
+            }
+            $this->createDirectory($path);
+        }
+        echo "done\n";
 
         echo "Environment successfully changed to '{$id}'.\n";
     }
