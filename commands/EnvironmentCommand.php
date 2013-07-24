@@ -72,7 +72,7 @@ EOD;
 
         echo "\nFlushing directories... ";
         foreach ($this->flushPaths as $dir) {
-            $path = realpath($this->basePath . '/' . $dir);
+            $path = $this->basePath . '/' . $dir;
             if (file_exists($path)) {
                 $this->deleteDirectory($path, true);
             }

@@ -50,7 +50,7 @@ EOD;
     public function run($args)
     {
         foreach ($this->permissions as $dir => $config) {
-            $path = realpath($this->basePath . '/' . $dir);
+            $path = $this->basePath . '/' . $dir;
             if (file_exists($path)) {
                 if (isset($config['user'])) {
                     $this->changeOwner($path, $config['user']);
