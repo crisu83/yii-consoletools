@@ -41,7 +41,7 @@ class ConfigHelper
      * @param array $b array to be merged from.
      * @return array the merged array.
      */
-    public static function mergeArray($a, $b)
+    public static function mergeArray(array $a, array $b)
     {
         $args = func_get_args();
         $res = array_shift($args);
