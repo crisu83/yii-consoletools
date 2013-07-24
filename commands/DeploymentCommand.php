@@ -37,7 +37,7 @@ abstract class DeploymentCommand extends CConsoleCommand
      */
     protected function createDirectory($path, $mode = 0777, $recursive = true)
     {
-        if (!file_exists($path)) {
+        if (!is_dir($path)) {
             mkdir($path, $mode, $recursive);
         }
     }
