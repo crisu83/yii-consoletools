@@ -75,8 +75,9 @@ EOD;
             $path = $this->basePath . '/' . $dir;
             if (file_exists($path)) {
                 $this->deleteDirectory($path, true);
+            } else {
+                $this->createDirectory($path);
             }
-            $this->createDirectory($path);
         }
         echo "done\n";
 
