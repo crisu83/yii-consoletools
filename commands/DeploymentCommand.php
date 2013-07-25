@@ -37,9 +37,7 @@ abstract class DeploymentCommand extends CConsoleCommand
      */
     protected function createDirectory($path, $mode = 0777, $recursive = true)
     {
-        if (!is_dir($path)) {
-            mkdir($path, $mode, $recursive);
-        }
+        mkdir($path, $mode, $recursive);
     }
 
     /**
@@ -81,7 +79,9 @@ abstract class DeploymentCommand extends CConsoleCommand
                     $sourcePath = $source . '/' . $file;
                     $destinationPath = $destination . '/' . $file;
                     if (is_dir($sourcePath)) {
-                        $this->createDirectory($destinationPath);
+                        if (!is_dir($destinationPath)) {
+                            $this->createDirectory($destinationPath);
+                        }
                         $this->copyDirectory($sourcePath, $destinationPath);
                     } else {
                         copy($sourcePath, $destinationPath);
