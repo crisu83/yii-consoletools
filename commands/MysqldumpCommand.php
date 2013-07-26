@@ -7,12 +7,12 @@
  * @package crisu83.yii-deploymenttools.commands
  */
 
-Yii::import('vendor.crisu83.yii-deploymenttools.commands.DeploymentCommand');
+Yii::import('vendor.crisu83.yii-deploymenttools.commands.ProcessCommand');
 
 /**
  * Command for running mysqldump and save the output into a file for later use.
  */
-class MysqldumpCommand extends DeploymentCommand
+class MysqldumpCommand extends ProcessCommand
 {
     /**
      * @var string the path to the mysqldump binary.
@@ -62,29 +62,17 @@ class MysqldumpCommand extends DeploymentCommand
     public function run($args)
     {
         $binPath = $this->resolveBinPath();
-        $database = $this->resolveDatabaseName();
         $options = $this->normalizeOptions($this->options);
+        $database = $this->resolveDatabaseName();
         $dumpPath = $this->resolveDumpPath();
-        $descriptors = array(
-            0 => array('pipe', 'r'),
-            1 => array('file', $dumpPath, 'w'),
-            2 => array('pipe', 'w'),
+        return $this->process(
+            "$binPath $options $database",
+            array(
+                self::DESCRIPTOR_STDIN  => array('pipe', 'r'),
+                self::DESCRIPTOR_STDOUT => array('file', $dumpPath, 'w'),
+                self::DESCRIPTOR_STDERR => array('pipe', 'w'),
+            )
         );
-        $pipes = array();
-        $cmd = "{$binPath} $options {$database}";
-        echo "Running command: $cmd ... ";
-        $process = proc_open($cmd, $descriptors, $pipes);
-        if (!is_resource($process)) {
-            throw new CException('Failed to dump database. Could not locate mysqldump.');
-        }
-        fclose($pipes[0]);
-        $error = stream_get_contents($pipes[2]);
-        fclose($pipes[2]);
-        $return = proc_close($process);
-        if ($return !== 0) {
-            throw new CException(sprintf('Failed to dump database with error: %s', $error));
-        }
-        return $return;
     }
 
     /**
@@ -112,10 +100,8 @@ class MysqldumpCommand extends DeploymentCommand
     protected function resolveDumpPath()
     {
         $path = $this->basePath . '/' . $this->dumpPath;
-        if (!is_dir($path)) {
-            $this->createDirectory($path);
-        }
-        return $path . '/' . $this->dumpFile;
+        $this->ensureDirectory($path);
+        return realpath($path) . '/' . $this->dumpFile;
     }
 
     /**

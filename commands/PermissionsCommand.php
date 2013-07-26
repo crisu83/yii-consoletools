@@ -7,12 +7,10 @@
  * @package crisu83.yii-deploymenttools.commands
  */
 
-Yii::import('vendor.crisu83.yii-deploymenttools.commands.DeploymentCommand');
-
 /**
  * Console command for changing directory permissions and ownership.
  */
-class PermissionsCommand extends DeploymentCommand
+class PermissionsCommand extends CConsoleCommand
 {
     /**
      * @var array list of permission configurations (path => config).
@@ -22,6 +20,21 @@ class PermissionsCommand extends DeploymentCommand
         'protected/yiic' => array('mode' => 0755),
         'assets' => array('mode' => 0777),
     );
+    /**
+     * @var string the base path.
+     */
+    public $basePath;
+
+    /**
+     * Initializes the command.
+     */
+    public function init()
+    {
+        if (!isset($this->basePath)) {
+            $this->basePath = Yii::getPathOfAlias('webroot');
+        }
+        $this->basePath = rtrim($this->basePath, '/');
+    }
 
     /**
      * Provides the command description.
