@@ -4,7 +4,7 @@
  * @author Christoffer Niska <christoffer.niska@gmail.com>
  * @copyright Copyright &copy; Christoffer Niska 2013-
  * @license http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @package crisu83.yii-deploymenttools.helpers
+ * @package crisu83.yii-consoletools.helpers
  */
 
 /**
