@@ -1,8 +1,8 @@
 {
-    "name": "crisu83/yii-deploymenttools",
-    "description": "A collection of tools for deploying Yii applications.",
-    "keywords": ["yii", "configuration"],
-    "type": "yii-extension",
+    "name": "crisu83/yii-consoletools",
+    "description": "A collection of tools for developing console commands for Yii.",
+    "keywords": ["yii", "console", "tools"],
+    "type": "library",
     "license": "BSD-3-Clause",
     "authors": [
         {
