@@ -1,4 +1,4 @@
-yii-deploymenttools
-===================
+yii-consoletools
+================
 
-A collection of tools for deploying Yii applications.
+A collection of tools for developing console commands for Yii.
