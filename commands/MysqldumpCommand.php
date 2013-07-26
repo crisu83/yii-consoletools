@@ -4,10 +4,10 @@
  * @author Christoffer Niska <christoffer.niska@gmail.com>
  * @copyright Copyright &copy; Christoffer Niska 2013-
  * @license http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @package crisu83.yii-deploymenttools.commands
+ * @package crisu83.yii-consoletools.commands
  */
 
-Yii::import('vendor.crisu83.yii-deploymenttools.commands.ProcessCommand');
+Yii::import('vendor.crisu83.yii-consoletools.commands.ProcessCommand');
 
 /**
  * Command for running mysqldump and save the output into a file for later use.
