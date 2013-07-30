@@ -76,7 +76,7 @@ EOD;
                         $this->changeMode($path, $config['mode']);
                     }
                 } catch(CException $e) {
-                    echo $e->getMessage();
+                    echo $e->getMessage()."\n";
                 }
             } else {
                 echo sprintf("Failed to change permissions for %s. File does not exist!", $path);
