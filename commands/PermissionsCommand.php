@@ -65,14 +65,18 @@ EOD;
         foreach ($this->permissions as $dir => $config) {
             $path = $this->basePath . '/' . $dir;
             if (file_exists($path)) {
-                if (isset($config['user'])) {
-                    $this->changeOwner($path, $config['user']);
-                }
-                if (isset($config['group'])) {
-                    $this->changeGroup($path, $config['group']);
-                }
-                if (isset($config['mode'])) {
-                    $this->changeMode($path, $config['mode']);
+                try {
+                    if (isset($config['user'])) {
+                        $this->changeOwner($path, $config['user']);
+                    }
+                    if (isset($config['group'])) {
+                        $this->changeGroup($path, $config['group']);
+                    }
+                    if (isset($config['mode'])) {
+                        $this->changeMode($path, $config['mode']);
+                    }
+                } catch(CException $e) {
+                    echo $e->getMessage();
                 }
             } else {
                 echo sprintf("Failed to change permissions for %s. File does not exist!", $path);
@@ -93,8 +97,10 @@ EOD;
         $ownerData = posix_getpwuid($ownerUid);
         $oldOwner = $ownerData['name'];
         if ($oldOwner !== $this->user) {
+            if(!@chown($path, $newOwner)) {
+                throw new CException(sprintf('Unable to change owner for %s, permission denied', $path));
+            }
             echo sprintf("Changing owner for %s (%s => %s)... ", $path, $oldOwner, $newOwner);
-            chown($path, $newOwner);
             echo "done\n";
         }
     }
@@ -110,8 +116,10 @@ EOD;
         $groupData = posix_getgrgid($groupGid);
         $oldGroup = $groupData['name'];
         if ($oldGroup !== $newGroup) {
+            if(!@chgrp($path, $newGroup)) {
+                throw new CException(sprintf('Unable to change group for %s, permission denied', $path));    
+            }
             echo sprintf("Changing group for %s (%s => %s)... ", $path, $oldGroup, $newGroup);
-            chgrp($path, $newGroup);
             echo "done\n";
         }
     }
@@ -126,8 +134,10 @@ EOD;
         $oldPermission = substr(sprintf('%o', fileperms($path)), -4);
         $newPermission = sprintf('%04o', $mode);
         if ($oldPermission !== $newPermission) {
+            if(!@chmod($path, $mode)) {
+                throw new CException (sprintf("Unable to change mode for %s, permission denied", $path));
+            }
             echo sprintf("Changing mode for %s (%s => %s)... ", $path, $oldPermission, $newPermission);
-            chmod($path, $mode);
             echo "done\n";
         }
     }
