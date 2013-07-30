@@ -76,7 +76,7 @@ EOD;
                         $this->changeMode($path, $config['mode']);
                     }
                 } catch(CException $e) {
-                    echo $e->getMessage()."\n";
+                    echo $this->formatError($e->getMessage())."\n";
                 }
             } else {
                 echo sprintf("Failed to change permissions for %s. File does not exist!", $path);
@@ -140,5 +140,16 @@ EOD;
             echo sprintf("Changing mode for %s (%s => %s)... ", $path, $oldPermission, $newPermission);
             echo "done\n";
         }
+    }
+    
+    /**
+     * Formats an error string. This implementation colors it as white text on 
+     * a red background
+     * @param string $error the error message
+     * @return string the formatted error message
+     */
+    protected function formatError($error)
+    {
+        return "\033[1;37m"."\033[41m".$error."\033[0m";
     }
 }
