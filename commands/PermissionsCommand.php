@@ -78,7 +78,7 @@ EOD;
                 echo sprintf("Failed to change permissions for %s. File does not exist!\n", $path);
             }
         }
-        echo "\nPermissions successfully changed. \n";
+        echo "Permissions successfully changed.\n";
         return 0;
     }
 
