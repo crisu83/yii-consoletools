@@ -75,7 +75,7 @@ EOD;
                     $this->changeMode($path, $config['mode']);
                 }
             } else {
-                echo sprintf("Failed to change permissions for %s. File does not exist!", $path);
+                echo sprintf("Failed to change permissions for %s. File does not exist!\n", $path);
             }
         }
         echo "\nPermissions successfully changed. \n";
