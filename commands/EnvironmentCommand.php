@@ -7,37 +7,17 @@
  * @package crisu83.yii-consoletools.commands
  */
 
+Yii::import('vendor.crisu83.yii-consoletools.commands.FlushCommand');
+
 /**
  * Console command for deploying environments.
  */
-class EnvironmentCommand extends CConsoleCommand
+class EnvironmentCommand extends FlushCommand
 {
     /**
      * @var string the name of the environments directory.
      */
     public $environmentsDir = 'environments';
-    /**
-     * @var array list of directories that should be flushed.
-     */
-    public $flushPaths = array(
-        'protected/runtime',
-        'assets',
-    );
-    /**
-     * @var string the base path.
-     */
-    public $basePath;
-
-    /**
-     * Initializes the command.
-     */
-    public function init()
-    {
-        if (!isset($this->basePath)) {
-            $this->basePath = Yii::getPathOfAlias('webroot');
-        }
-        $this->basePath = rtrim($this->basePath, '/');
-    }
 
     /**
      * Provides the command description.
@@ -70,15 +50,7 @@ EOD;
         }
         $id = $args[0];
 
-        echo "\nFlushing directories... ";
-        foreach ($this->flushPaths as $dir) {
-            $path = $this->basePath . '/' . $dir;
-            if (file_exists($path)) {
-                $this->flushDirectory($path);
-            }
-            $this->ensureDirectory($path);
-        }
-        echo "done\n";
+        $this->flush();
 
         echo "\nCopying environment files... \n";
         $environmentPath = $this->basePath . '/' . $this->environmentsDir . '/' . $id;
@@ -89,30 +61,5 @@ EOD;
         $this->copyFiles($fileList);
 
         echo "\nEnvironment successfully changed to '{$id}'.\n";
-    }
-
-    /**
-     * Flushes a directory recursively.
-     * @param string $path the directory path.
-     * @param boolean $delete whether to delete the directory.
-     */
-    protected function flushDirectory($path, $delete = false)
-    {
-        if (is_dir($path)) {
-            $files = scandir($path);
-            foreach ($files as $file) {
-                if (strpos($file, '.') !== 0) {
-                    $filePath = $path . '/' . $file;
-                    if (is_dir($filePath)) {
-                        $this->flushDirectory($filePath, true);
-                    } else {
-                        unlink($filePath);
-                    }
-                }
-            }
-            if ($delete) {
-                rmdir($path);
-            }
-        }
     }
 }
