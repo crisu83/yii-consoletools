@@ -70,11 +70,10 @@ abstract class ProcessCommand extends CConsoleCommand
         if (!is_resource($this->_process)) {
             throw new CException('Failed to start process. Process could not be opened.');
         }
-        $this->closeResource(self::DESCRIPTOR_STDIN);
     }
 
     /**
-     * Ends the current process.
+     * Closes all open pipes and ends the current process.
      * @return integer the exit code.
      * @throws CException if the process is not running of if it failed.
      */
@@ -82,9 +81,12 @@ abstract class ProcessCommand extends CConsoleCommand
     {
         if (isset($this->_process)) {
             $error = $this->getError();
+            foreach (array_keys($this->_pipes) as $descriptor) {
+                $this->closeResource($descriptor);
+            }
             $return = proc_close($this->_process);
             if ($return !== 0) {
-                throw new CException(sprintf('Process failed with error "%s"', $error));
+                throw new CException(sprintf('Process failed with error "%s"', $error), $return);
             }
             $this->_process = null;
             echo "done\n";
@@ -130,7 +132,13 @@ abstract class ProcessCommand extends CConsoleCommand
      */
     public function closeResource($descriptor)
     {
-        return isset($this->_pipes[$descriptor]) ? fclose($this->_pipes[$descriptor]) : false;
+        if (isset($this->_pipes[$descriptor])) {
+            $success = fclose($this->_pipes[$descriptor]);
+            unset($this->_pipes[$descriptor]);
+            return $success;
+        }
+        
+        return false;
     }
 
     /**
