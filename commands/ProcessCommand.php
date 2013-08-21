@@ -83,7 +83,7 @@ abstract class ProcessCommand extends CConsoleCommand
             $error = $this->getError();
             $return = proc_close($this->_process);
             if ($return !== 0) {
-                throw new CException(sprintf('Process failed with error "%s"', $error));
+                throw new CException(sprintf('Process failed with error "%s"', $error), $return);
             }
             $this->_process = null;
             echo "done\n";
