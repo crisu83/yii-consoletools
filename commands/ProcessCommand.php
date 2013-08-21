@@ -129,7 +129,13 @@ abstract class ProcessCommand extends CConsoleCommand
      */
     public function closeResource($descriptor)
     {
-        return isset($this->_pipes[$descriptor]) ? fclose($this->_pipes[$descriptor]) : false;
+        if (isset($this->_pipes[$descriptor])) {
+            $success = fclose($this->_pipes[$descriptor]);
+            unset($this->_pipes[$descriptor]);
+            return $success;
+        }
+        
+        return false;
     }
 
     /**
