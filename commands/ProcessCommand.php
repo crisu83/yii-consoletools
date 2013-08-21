@@ -70,7 +70,6 @@ abstract class ProcessCommand extends CConsoleCommand
         if (!is_resource($this->_process)) {
             throw new CException('Failed to start process. Process could not be opened.');
         }
-        $this->closeResource(self::DESCRIPTOR_STDIN);
     }
 
     /**
