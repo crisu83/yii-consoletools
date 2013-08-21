@@ -73,7 +73,7 @@ abstract class ProcessCommand extends CConsoleCommand
     }
 
     /**
-     * Ends the current process.
+     * Closes all open pipes and ends the current process.
      * @return integer the exit code.
      * @throws CException if the process is not running of if it failed.
      */
@@ -81,6 +81,9 @@ abstract class ProcessCommand extends CConsoleCommand
     {
         if (isset($this->_process)) {
             $error = $this->getError();
+            foreach (array_keys($this->_pipes) as $descriptor) {
+                $this->closeResource($descriptor);
+            }
             $return = proc_close($this->_process);
             if ($return !== 0) {
                 throw new CException(sprintf('Process failed with error "%s"', $error), $return);
