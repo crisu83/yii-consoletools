@@ -19,6 +19,12 @@ class FlushCommand extends CConsoleCommand
         'protected/runtime',
         'assets',
     );
+
+    /**
+     * @var array files to exclude when flushing directories.
+     */
+    public $exclude = array();
+
     /**
      * @var string the base path.
      */
@@ -59,15 +65,17 @@ class FlushCommand extends CConsoleCommand
     protected function flushDirectory($path, $delete = false)
     {
         if (is_dir($path)) {
-            $files = scandir($path);
-            foreach ($files as $file) {
-                if (strpos($file, '.') !== 0) {
-                    $filePath = $path . '/' . $file;
-                    if (is_dir($filePath)) {
-                        $this->flushDirectory($filePath, true);
-                    } else {
-                        unlink($filePath);
-                    }
+            $entries = scandir($path);
+            foreach ($entries as $entry) {
+                $exclude = array_merge(array('.', '..'), $this->exclude);
+                if (in_array($entry, $exclude)) {
+                    continue;
+                }
+                $entryPath = $path . '/' . $entry;
+                if (is_dir($entryPath)) {
+                    $this->flushDirectory($entryPath, true);
+                } else {
+                    unlink($entryPath);
                 }
             }
             if ($delete) {
