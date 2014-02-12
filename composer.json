@@ -10,5 +10,12 @@
             "email": "christoffer.niska@gmail.com",
             "homepage": "http://www.cniska.net/"
         }
-    ]
+    ],
+    "autoload": {
+        "classmap": [
+            "behaviors/",
+            "commands/",
+            "helpers/"
+        ]
+    }
 }
