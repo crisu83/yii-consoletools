@@ -7,8 +7,6 @@
  * @package crisu83.yii-consoletools.commands
  */
 
-Yii::import('vendor.crisu83.yii-consoletools.commands.ProcessCommand');
-
 /**
  * Command for running mysqldump and save the output into a file for later use.
  */

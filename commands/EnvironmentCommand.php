@@ -7,8 +7,6 @@
  * @package crisu83.yii-consoletools.commands
  */
 
-Yii::import('vendor.crisu83.yii-consoletools.commands.FlushCommand');
-
 /**
  * Console command for deploying environments.
  */

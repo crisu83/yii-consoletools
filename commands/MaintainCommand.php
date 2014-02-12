@@ -7,12 +7,10 @@
  * @package crisu83.yii-consoletools.commands
  */
 
-Yii::import('vendor.crisu83.yii-consoletools.commands.FlushCommand');
-
 /**
  * Console command for enabling and disabling maintenance mode.
  */
-class MaintainCommand extends FlushCommand
+class MaintainCommand extends CConsoleCommand
 {
     /**
      * @var string the default action.
@@ -50,7 +48,6 @@ EOD;
         if (file_exists($file)) {
             unlink($file);
             echo "done\n";
-            $this->flush();
         } else {
             echo "failed\n";
             echo "Application is not in maintenance mode.\n";
