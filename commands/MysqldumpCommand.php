@@ -84,10 +84,19 @@ class MysqldumpCommand extends ProcessCommand
      */
     public function run($args)
     {
+        list($action, $options, $args) = $this->resolveRequest($args);
+
+        foreach ($options as $key => $value) {
+            if (property_exists($this, $key)) {
+                $this->$key = $value;
+            }
+        }
+
         $binPath = $this->resolveBinPath();
         $options = $this->normalizeOptions($this->options);
         $database = $this->resolveDatabaseName();
         $dumpPath = $this->resolveDumpPath();
+
         return $this->process(
             "$binPath $options $database",
             array(
@@ -113,7 +122,7 @@ class MysqldumpCommand extends ProcessCommand
      */
     protected function resolveDatabaseName()
     {
-        return $this->getDb()->createCommand('select database();')->queryScalar();
+        return $this->getDb()->createCommand('SELECT DATABASE();')->queryScalar();
     }
 
     /**
