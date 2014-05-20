@@ -97,6 +97,8 @@ class MysqldumpCommand extends ProcessCommand
         $database = $this->resolveDatabaseName();
         $dumpPath = $this->resolveDumpPath();
 
+        $options .= " --no-create-db";
+
         return $this->process(
             "$binPath $options $database",
             array(
