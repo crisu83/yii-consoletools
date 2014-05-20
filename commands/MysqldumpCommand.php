@@ -100,11 +100,11 @@ class MysqldumpCommand extends ProcessCommand
             }
         }
 
-        if (!$this->schema || $this->schema == "false") {
+        if (!$this->schema || $this->schema === "false") {
             $this->options["no-create-info"] = null;
             $this->options["skip-triggers"] = null;
         }
-        if (!$this->data || $this->data == "false") {
+        if (!$this->data || $this->data === "false") {
             $this->options["no-data"] = null;
         }
         $this->options["no-create-db"] = null;
