@@ -30,6 +30,14 @@ class MysqldumpCommand extends ProcessCommand
      */
     public $options = array();
     /**
+     * @var bool include schema in the dump.
+     */
+    public $schema = true;
+    /**
+     * @var bool include data in the dump.
+     */
+    public $data = true;
+    /**
      * @var string the component ID for the database connection to use.
      */
     public $connectionID = 'db';
@@ -97,6 +105,12 @@ class MysqldumpCommand extends ProcessCommand
         $database = $this->resolveDatabaseName();
         $dumpPath = $this->resolveDumpPath();
 
+        if (!$this->schema || $this->schema == "false") {
+            $options .= " --no-create-info --skip-triggers";
+        }
+        if (!$this->data || $this->data == "false") {
+            $options .= " --no-data";
+        }
         $options .= " --no-create-db";
 
         return $this->process(
