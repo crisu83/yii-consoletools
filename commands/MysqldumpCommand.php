@@ -30,6 +30,14 @@ class MysqldumpCommand extends ProcessCommand
      */
     public $options = array();
     /**
+     * @var bool include schema in the dump.
+     */
+    public $schema = true;
+    /**
+     * @var bool include data in the dump.
+     */
+    public $data = true;
+    /**
      * @var string the component ID for the database connection to use.
      */
     public $connectionID = 'db';
@@ -92,6 +100,15 @@ class MysqldumpCommand extends ProcessCommand
             }
         }
 
+        if (!$this->schema || $this->schema === "false") {
+            $this->options["no-create-info"] = null;
+            $this->options["skip-triggers"] = null;
+        }
+        if (!$this->data || $this->data === "false") {
+            $this->options["no-data"] = null;
+        }
+        $this->options["no-create-db"] = null;
+
         $binPath = $this->resolveBinPath();
         $options = $this->normalizeOptions($this->options);
         $database = $this->resolveDatabaseName();
@@ -100,7 +117,7 @@ class MysqldumpCommand extends ProcessCommand
         return $this->process(
             "$binPath $options $database",
             array(
-                self::DESCRIPTOR_STDIN  => array('pipe', 'r'),
+                self::DESCRIPTOR_STDIN => array('pipe', 'r'),
                 self::DESCRIPTOR_STDOUT => array('file', $dumpPath, 'w'),
                 self::DESCRIPTOR_STDERR => array('pipe', 'w'),
             )
@@ -145,7 +162,11 @@ class MysqldumpCommand extends ProcessCommand
     {
         $result = array();
         foreach ($options as $name => $value) {
-            $result[] = "--$name=\"$value\"";
+            if ($value !== null) {
+                $result[] = "--$name=\"$value\"";
+            } else {
+                $result[] = "--$name";
+            }
         }
         return implode(' ', $result);
     }
