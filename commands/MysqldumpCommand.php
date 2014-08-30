@@ -38,6 +38,10 @@ class MysqldumpCommand extends ProcessCommand
      */
     public $data = true;
     /**
+     * @var bool format data in a compact way (set false for more verbose insert statements).
+     */
+    public $compact = true;
+    /**
      * @var string the component ID for the database connection to use.
      */
     public $connectionID = 'db';
@@ -106,6 +110,10 @@ class MysqldumpCommand extends ProcessCommand
         }
         if (!$this->data || $this->data === "false") {
             $this->options["no-data"] = null;
+        }
+        if (!$this->compact || $this->compact === "false") {
+            $this->options["skip-extended-insert"] = null;
+            $this->options["complete-insert"] = null;
         }
         $this->options["no-create-db"] = null;
 
