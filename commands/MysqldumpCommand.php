@@ -61,9 +61,12 @@ class MysqldumpCommand extends ProcessCommand
         if (!isset($this->options['password'])) {
             $this->options['password'] = $db->password;
         }
+        $parsed = $this->parseConnectionString($db->connectionString);
         if (!isset($this->options['host'])) {
-            $parsed = $this->parseConnectionString($db->connectionString);
             $this->options['host'] = $parsed['hostName'];
+        }
+        if (!isset($this->options['port']) && isset($parsed['port'])) {
+            $this->options['port'] = $parsed['port'];
         }
     }
 
