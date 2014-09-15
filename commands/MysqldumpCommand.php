@@ -49,11 +49,10 @@ class MysqldumpCommand extends ProcessCommand
     private $_db;
 
     /**
-     * Initializes the command.
+     * Initializes the database options.
      */
-    public function init()
+    public function initDbOptions()
     {
-        parent::init();
         $db = $this->getDb();
         if (!isset($this->options['user'])) {
             $this->options['user'] = $db->username;
@@ -106,6 +105,8 @@ class MysqldumpCommand extends ProcessCommand
                 $this->$key = $value;
             }
         }
+
+        $this->initDbOptions();
 
         if (!$this->schema || $this->schema === "false") {
             $this->options["no-create-info"] = null;
