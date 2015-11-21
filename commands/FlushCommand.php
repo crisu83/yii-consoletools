@@ -72,7 +72,7 @@ class FlushCommand extends CConsoleCommand
                     continue;
                 }
                 $entryPath = $path . '/' . $entry;
-                if (is_dir($entryPath)) {
+                if (!is_link($entryPath) && is_dir($entryPath)) {
                     $this->flushDirectory($entryPath, true);
                 } else {
                     unlink($entryPath);
